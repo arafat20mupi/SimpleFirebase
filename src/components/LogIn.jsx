@@ -1,10 +1,34 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Context/Provider";
+import { FaGoogle, FaGithub ,FaTwitter } from "react-icons/fa";
 
 const LogIn = () => {
 
-    const { signInUser,} = useContext(AuthContext)
+    const { setUser, signInUser, googleLogIn, githubLogIn } = useContext(AuthContext)
+
+
+    const handleGoogleLogIn = () => {
+        googleLogIn()
+            .then(result => {
+                setUser(result.user)
+                console.log(result.user)
+            })
+            .catch(err => { console.error(err) })
+    }
+
+    const handleGithubLogIn = () => {
+        githubLogIn()
+            .then(result => {
+                console.log(result.user)
+                setUser(result.user)
+            })
+            .catch(err => { console.error(err) })
+    }
+
+    const handleTwitterLogIn = () => {
+        
+    }
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -19,6 +43,7 @@ const LogIn = () => {
                 console.log(error)
             })
     }
+
     return (
         <div className="flex item-center justify-center p-6  ">
             <div className="flex flex-col max-w-md   rounded-md sm:p-10 dark:bg-gray-50 dark:text-gray-800">
@@ -48,7 +73,13 @@ const LogIn = () => {
                             <Link to={'/signup'} className="hover:underline dark:text-violet-600"> Sign up</Link>
                         </p>
                     </div>
+
                 </form>
+                <div className="flex space-x-3 mt-4 w-full">
+                    <button className="text-2xl" onClick={handleGoogleLogIn}><FaGoogle ></FaGoogle></button>
+                    <button className="text-2xl" onClick={handleGithubLogIn}><FaGithub></FaGithub></button>
+                    <button className="text-2xl" onClick={handleTwitterLogIn}> <FaTwitter></FaTwitter> </button>
+                </div>
             </div>
         </div>
     );

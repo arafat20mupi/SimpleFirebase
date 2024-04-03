@@ -34,7 +34,8 @@ const Navber = () => {
             </div>
             <div className="navbar-end">
                 {
-                    user && <p className="font-semibold btn">{user?.email}</p>
+                    user && <p className="font-semibold btn">{user?.displayName}</p>
+                   
                 }
                 <a onClick={handleLogOut} className="btn text-white font-bold btn-primary ml-2">Log Out</a>
             </div>
