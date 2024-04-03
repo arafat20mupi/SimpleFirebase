@@ -1,25 +1,40 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Context/Provider";
 
 
 const SignUp = () => {
-    const {createUser} = useContext(AuthContext)
-
+    const { createUser} = useContext(AuthContext)
+    const [error, setError,setUser] = useState()
 
     const handleSignup = (e) => {
         e.preventDefault();
+        const name = e.target.name.value;
         const email = e.target.email.value;
         const password = e.target.password.value;
-        const name = e.target.name.value;
-        console.log(email, password, name);
-        createUser(email,password)
-        .then(result => {
-            console.log(result.user)
-        })
-        .catch(err => {
-             console.log(err)
-         })
+        const confirmPassword = e.target.confirmPassword.value;
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters")
+            return
+        }
+        if (password !== confirmPassword) {
+            setError("Passwords do not match")
+            return
+        }
+        if(!/[@#$%^&*!]/.test(password)) {
+            setError("Password add a spicial cherecter like (@,#,$,%,^,&,*,!)")
+            return
+        }
+
+        setError('')
+        console.log(email, password, name, confirmPassword);
+        createUser(email, password)
+            .then(result => {
+                setUser(result.user)
+            })
+            .catch(err => {
+                setError(err.message.split("/")[1])
+            })
     }
     return (
         <div className="flex item-center justify-center p-6  ">
@@ -35,15 +50,19 @@ const SignUp = () => {
                         </div>
                         <div>
                             <label className="block mb-2 text-sm">Email address</label>
-                            <input type="email" name="email" required placeholder="Enter your passward" className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800" />
+                            <input type="email" name="email" required placeholder="Enter your Email" className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800" />
                         </div>
                         <div>
-                            <div className="flex justify-between mb-2">
-                                <label className="text-sm">Password</label>
-                                <a rel="noopener noreferrer" href="#" className="text-xs hover:underline dark:text-gray-600">Forgot password?</a>
-                            </div>
-                            <input type="password" required name="password" id="password" placeholder="*****" className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800" />
+                            <label className="block mb-2 text-sm">Password</label>
+                            <input type="password" required name="password" placeholder="Enter your passward" className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800" />
                         </div>
+                        <div>
+                            <label className="block mb-2 text-sm">Confirm Password</label>
+                            <input type="password" name="confirmPassword" required placeholder="Enter Confirm Password" className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800" />
+                        </div>
+                        {
+                            error &&<p className="text-red-500 text-lg">{error}</p>
+                        }
                     </div>
                     <div className="space-y-2">
                         <div>
